@@ -8,9 +8,29 @@
     ></v-carousel-item>
   </v-carousel>
 </template>
-
 <script>
 export default {
   name: "HomeView",
+  data() {
+    return {
+      formData: {},
+    };
+  },
+  created(){
+    this.getUser()
+  },
+  methods: {
+    async getUser() {
+      try {
+        const response = await this.axios.get( // Note the use of this.$axios
+          process.env.VUE_APP_API_SERVER +`/user`
+        );
+        console.log("Response Data:", response.data); // Log the response data
+      } catch (err) {
+        console.error(err);
+      }
+    },
+
+  },
 };
 </script>
