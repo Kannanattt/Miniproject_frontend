@@ -23,15 +23,15 @@
           width="40"
         />
       </div>
-      <v-text
+      <div
         class="shrink mt-1 hidden-sm-and-down"
         style="color: var(--color-main); font-weight: bold"
         contain
         min-width="100"
         width="100"
       >
-        <h3>SHOOTINHG</h3>
-      </v-text>
+        <h3>SSC Club Dannok</h3>
+      </div>
     </div>
 
     <v-spacer></v-spacer>
@@ -39,16 +39,102 @@
       <span :class="{ active: $route.path === '/' }">หน้าแรก</span>
     </router-link>
     <v-spacer></v-spacer>
-    <router-link to="/login">
+    <v-btn to="/login" v-if="!isAuth">
       <span :class="{ active: $route.path === '/login' }">เข้าสู่ระบบ</span>
-    </router-link>
+    </v-btn>
+
+    <template v-if="isAuth">
+      <v-menu min-width="200px" rounded v-model="showMenu">
+        <template v-slot:activator="{ props }">
+          <v-btn icon v-bind="props" @click="showMenu = !showMenu">
+            <v-avatar color="var(--color-main)" size="40px">
+              <v-icon color="var(--color-black)" dark>mdi-account-circle</v-icon>
+            </v-avatar>
+          </v-btn>
+        </template>
+        <v-card>
+          <v-card-text>
+            <div class="mx-auto text-center">
+              <v-avatar color="var(--color-main)" >
+              <v-icon color="var(--color-black)" dark>mdi-account-circle</v-icon>
+            </v-avatar>
+              <p>{{ user.role }}</p>
+              <h3>{{ user.username }}</h3>
+
+              <h5>{{ user.fullname }}</h5>
+              <span>{{ user.phone }}</span>
+
+              <v-divider class="my-3"></v-divider>
+              <v-btn variant="text">แก้ไขข้อมูลส่วนตัว</v-btn>
+              <v-divider class="my-3"></v-divider>
+              <v-btn variant="text" @click="logout()"> ออกจากระบบ </v-btn>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-menu>
+    </template>
   </v-app-bar>
 </template>
 
 <script>
 export default {
   name: "NavBar",
-  data: () => ({}),
+  data: () => ({
+    auth: null,
+    isAuth: false,
+    showMenu: false,
+    user: {
+      initials: "",
+      role: "",
+      username: "",
+      fullname: "",
+      phone: "",
+    },
+  }),
+  // computed: {
+  //   user() {
+  //     // You should replace this with actual user data if available
+  //     return { initials: this.auth?.user?.username };
+  //   },
+  // },
+  created() {
+    this.auth = JSON.parse(localStorage.getItem("auth"));
+    this.isAuth = this.auth !== null;
+    this.user.initials = "PP";
+    this.user.username = this.auth.user.username;
+    this.user.phone = this.auth.c_tel || null;
+    this.getFullName();
+  },
+  methods: {
+    async logout() {
+      try {
+        localStorage.clear("auth");
+        window.location.reload();
+      } catch (error) {
+        // Handle the error, e.g., show an error message
+        console.error("logout error:", error);
+        // You can display an error message to the user here
+      }
+    },
+
+    getFullName() {
+      try {
+        if (this.auth) {
+          if (this.auth.user.role === "customer") {
+            this.user.fullname = this.auth.c_fname + " " + this.auth.c_lname;
+            this.user.role = "ลูกค้า";
+          } else if (this.auth.user.role === "owner") {
+            this.user.fullname = this.auth.o_fname + " " + this.auth.o_lname;
+            this.user.role = "เจ้าของ";
+          }
+        }
+      } catch (error) {
+        console.error("Error in getFullName:", error);
+        // Handle the error, e.g., set a default value for fullname
+        this.fullname = "Unknown";
+      }
+    },
+  },
 };
 </script>
 
