@@ -1,6 +1,9 @@
 <template>
   <v-app-bar app color="primary" dark>
-    <div class="d-flex align-center">
+    <div
+      class="d-flex align-center"
+      style="flex: 1; justify-content: flex-start"
+    >
       <div
         style="
           background-color: var(--color-main);
@@ -34,38 +37,51 @@
       </div>
     </div>
 
-    <v-spacer></v-spacer>
-    <router-link to="/">
-      <span :class="{ active: $route.path === '/' }">หน้าแรก</span>
-    </router-link>
-    <v-spacer></v-spacer>
-    <v-btn to="/login" v-if="!isAuth">
-      <span :class="{ active: $route.path === '/login' }">เข้าสู่ระบบ</span>
-    </v-btn>
+    <div
+      style="
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        flex: 1;
+      "
+    >
+      <router-link to="/" style="margin-right: 25px">
+        <span :class="{ active: $route.path === '/' }">หน้าแรก</span>
+      </router-link>
 
+      <v-btn to="/login" v-if="!isAuth">
+        <span :class="{ active: $route.path === '/login' }">เข้าสู่ระบบ</span>
+      </v-btn>
+    </div>
     <template v-if="isAuth">
       <v-menu min-width="200px" rounded v-model="showMenu">
         <template v-slot:activator="{ props }">
-          <v-btn icon v-bind="props" @click="showMenu = !showMenu">
-            <v-avatar color="var(--color-main)" size="40px">
-              <v-icon color="var(--color-black)" dark>mdi-account-circle</v-icon>
-            </v-avatar>
+          <v-btn v-bind="props" @click="showMenu = !showMenu">
+            <!-- <v-avatar color="var(--color-main)" size="40px" style="margin-right: 20px;">
+              <v-icon color="var(--color-black)" dark
+                >mdi-account-circle</v-icon
+              >
+            </v-avatar> -->
+            {{ user.username }}
           </v-btn>
         </template>
         <v-card>
           <v-card-text>
             <div class="mx-auto text-center">
-              <v-avatar color="var(--color-main)" >
-              <v-icon color="var(--color-black)" dark>mdi-account-circle</v-icon>
-            </v-avatar>
+              <v-avatar color="var(--color-main)">
+                <v-icon color="var(--color-black)" dark
+                  >mdi-account-circle</v-icon
+                >
+              </v-avatar>
               <p>{{ user.role }}</p>
               <h3>{{ user.username }}</h3>
-
               <h5>{{ user.fullname }}</h5>
               <span>{{ user.phone }}</span>
-
+              <v-divider class="my-3" v-if="isAdmin"></v-divider>
+              <v-btn variant="text" v-if="isAdmin" to="/admin">จัดการระบบ</v-btn>
               <v-divider class="my-3"></v-divider>
-              <v-btn variant="text">แก้ไขข้อมูลส่วนตัว</v-btn>
+              <v-btn variant="text" to="/profile">แก้ไขข้อมูลส่วนตัว</v-btn>
               <v-divider class="my-3"></v-divider>
               <v-btn variant="text" @click="logout()"> ออกจากระบบ </v-btn>
             </div>
@@ -82,6 +98,7 @@ export default {
   data: () => ({
     auth: null,
     isAuth: false,
+    isAdmin: false,
     showMenu: false,
     user: {
       initials: "",
@@ -100,6 +117,7 @@ export default {
   created() {
     this.auth = JSON.parse(localStorage.getItem("auth"));
     this.isAuth = this.auth !== null;
+    this.isAdmin = this.auth.user.role === "owner";
     this.user.initials = "PP";
     this.user.username = this.auth.user.username;
     this.user.phone = this.auth.c_tel || null;
@@ -109,7 +127,7 @@ export default {
     async logout() {
       try {
         localStorage.clear("auth");
-        window.location.reload();
+        window.location.href = "/";
       } catch (error) {
         // Handle the error, e.g., show an error message
         console.error("logout error:", error);

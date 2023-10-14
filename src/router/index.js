@@ -2,6 +2,13 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
+import AdminView from '../views/AdminView.vue'
+import UserListView from '../views/UserListView.vue'
+import UserAddView from '../views/UserAddView.vue'
+import GunListView from '../views/GunListView.vue'
+import GunAddView from '../views/GunAddView.vue'
+import RangeListView from '../views/RangeListView.vue'
+import RangeAddView from '../views/RangeAddView.vue'
 
 Vue.use(VueRouter)
 
@@ -15,7 +22,42 @@ const routes = [
     path: '/login',
     name: 'login',
     component: LoginView
-  }
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: AdminView
+  },
+  {
+    path: '/user',
+    name: 'user',
+    component: UserListView
+  },
+  {
+    path: '/user/add',
+    name: 'adduser',
+    component: UserAddView
+  },
+  {
+    path: '/gun',
+    name: 'gun',
+    component: GunListView
+  },
+  {
+    path: '/gun/add',
+    name: 'addgun',
+    component: GunAddView
+  },
+  {
+    path: '/range',
+    name: 'range',
+    component: RangeListView
+  },
+  {
+    path: '/range/add',
+    name: 'addrange',
+    component: RangeAddView
+  },
 ]
 
 const router = new VueRouter({

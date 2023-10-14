@@ -124,7 +124,13 @@ export default {
           this.$router.push("/").then(()=>window.location.reload())
         }
       } catch (error) {
-        // Handle the error, e.g., show an error message
+        Swal.fire({
+            title: "เข้าสู่ระบบไม่สำเร็จ!",
+            text: "โปรดตรวจสอบชื่อผู้ใช้และรหัสผ่านอีกครั้ง",
+            icon: "error",
+            confirmButtonText: "ตกลง",
+            // timer: 1500
+          })
         console.error("Login error:", error);
         // You can display an error message to the user here
       }
@@ -160,7 +166,13 @@ export default {
           }).then(() => window.location.reload());
         }
       } catch (error) {
-        // Handle the error, e.g., show an error message
+        Swal.fire({
+              title: "เกิดข้อผิดพลาด!",
+              // text: "คุณสมัครสมาชิกสำเร็จ",
+              icon: "error",
+              confirmButtonText: "ตกลง",
+              timer: 1500,
+            });
         console.error("Registration error:", error);
         // You can display an error message to the user here
       }

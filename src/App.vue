@@ -24,7 +24,7 @@ export default {
   computed: {
     mainClass() {
       return {
-        "d-flex justify-center align-center": this.$route.path === "/login",
+        "d-flex justify-center align-center": this.$route.path === "/login" || this.$route.path === "/admin" ,
       };
     },
   },
