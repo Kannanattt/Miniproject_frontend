@@ -24,10 +24,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in roomData" :key="item.name">
+            <tr v-for="(item, index) in roomData" :key="index">
               <td>{{ item.range }}</td>
               <td>
                 <v-chip
+                  @click="
+                    openDialogCard(item.range_id, item.range, item.timeD_01)
+                  "
                   label
                   :color="getColor(item.time_01)"
                   style="display: flex; justify-content: center; align-items; center; width: 100px;"
@@ -140,167 +143,320 @@
           </tbody>
         </v-table>
       </template>
-
-      <CardModal
-        :modalOpen="modalOpen"
-        :selectedRoomData="selectedRoomData"
-        @close-modal="modalOpen = false"
-      />
     </v-container>
+    <v-dialog v-model="dialogOpen" max-width="600px">
+      <v-card>
+        <v-card-title>ข้อมูลการจอง</v-card-title>
+        <v-container>
+          <div style="display: flex; flex-direction: row">
+            <span>สนาม: </span>
+            <span>{{ dataReserve.range }}</span>
+          </div>
+          <div style="display: flex; flex-direction: row">
+            <span>วันที่จอง: </span>
+            <span>{{ dataReserve.r_date_reserve }}</span>
+          </div>
+          <div style="display: flex; flex-direction: row">
+            <span>เวลาที่จอง: </span>
+            <span>{{ dataReserve.r_time_reserve }}</span>
+          </div>
+          <v-select
+            v-model="selectGuns"
+            :items="gunItems"
+            label="เลือกปืน"
+            item-value="g_id"
+            item-text="g_name"
+            multiple
+          >
+            <template v-slot:selection="{ item, index }">
+              <v-chip v-if="index < 4">
+                <span>{{ item.g_name }}</span>
+              </v-chip>
+              <span
+                v-if="index === 3 && selectGuns.length > 4"
+                class="text-grey text-caption align-self-center"
+              >
+                (+{{ selectGuns.length - 4 }} others)
+              </span>
+            </template>
+          </v-select>
+        </v-container>
+
+        <div
+          style="
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: 10px;
+          "
+        >
+          <v-btn color="primary" @click="reserveRange()">บันทึก</v-btn>
+          <v-btn style="margin-left: 10px" @click="closeDialogCard"
+            >ยกเลิก</v-btn
+          >
+        </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import ImageCover from "@/components/ImageCover.vue";
-import CardModal from "@/components/CardModal.vue";
+import Swal from "sweetalert2";
+
 export default {
   name: "HomeView",
   components: {
     ImageCover,
-    CardModal,
   },
   data() {
     return {
-      selectedDate: "2023-10-15",
+      c_id: null,
+      selectedDate: "",
       rangeItems: [],
       reserveItems: [],
-      modalOpen: false, // Control the modal's visibility
-      selectedRoomData: {}, // Store the data for the selected room
-      roomData: [],
+      dialogOpen: false,
+      dataReserve: {},
+      gunItems: [],
+      selectGuns: [],
+      roomData: []
     };
   },
   watch: {
-    selectedDate: function (data) {
-      console.log("data", data);
+    selectedDate: async function (data) {
       this.selectedDate = data;
-      this.getReserve();
-      this.getReserve();
-      this.getAllRange();
-      this.getAllRange();
+      await this.getReserve();
+      await this.getAllRange();
     },
   },
 
   created() {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are 0-indexed
+    const day = String(currentDate.getDate()).padStart(2, "0");
+
+    const formattedDate = `${year}-${month}-${day}`;
+    this.selectedDate = formattedDate;
+
+    this.c_id = JSON.parse(localStorage.getItem("auth"))?.c_id;
+
     this.getReserve();
     this.getAllRange();
+    this.getGuns();
   },
 
   methods: {
+    async filterReserveItemsByTime(reserveItems, shootingRange, time) {
+      return new Promise((resolve, reject) => {
+        try {
+          const filteredReservations = reserveItems.filter((t, i) => {
+            return (
+              t.shootingRange.s_id === shootingRange.s_id &&
+              t.r_time_reserve === time
+            );
+          });
+
+          resolve(filteredReservations);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    },
     async getAllRange() {
       try {
         const response = await this.axios.get(
           // Note the use of this.$axios
           process.env.VUE_APP_API_SERVER + `/shootingranges`
         );
-        this.rangeItems = response.data;
-        // this.getReserve();
-        console.log("this.reserveItems", this.reserveItems);
-        this.roomData = this.rangeItems.map((item, index) => {
-          const time_01 = this.reserveItems.filter((t, i) => {
-            return (
-              item.s_id === t.shootingRange.s_id &&
-              t.r_time_reserve === "10:00 - 11:00"
-            );
-          });
-          console.log("time_01", time_01);
-          const time_02 = this.reserveItems.filter((t, i) => {
-            return (
-              item.s_id === t.shootingRange.s_id &&
-              t.r_time_reserve === "11:00 - 12:00"
-            );
-          });
-          const time_03 = this.reserveItems.filter((t, i) => {
-            return (
-              item.s_id === t.shootingRange.s_id &&
-              t.r_time_reserve === "12:00 - 13:00"
-            );
-          });
-          const time_04 = this.reserveItems.filter((t, i) => {
-            return (
-              item.s_id === t.shootingRange.s_id &&
-              t.r_time_reserve === "13:00 - 14:00"
-            );
-          });
-          const time_05 = this.reserveItems.filter((t, i) => {
-            return (
-              item.s_id === t.shootingRange.s_id &&
-              t.r_time_reserve === "14:00 - 15:00"
-            );
-          });
-          const time_06 = this.reserveItems.filter((t, i) => {
-            return (
-              item.s_id === t.shootingRange.s_id &&
-              t.r_time_reserve === "15:00 - 16:00"
-            );
-          });
-          const time_07 = this.reserveItems.filter((t, i) => {
-            return (
-              item.s_id === t.shootingRange.s_id &&
-              t.r_time_reserve === "16:00 - 17:00"
-            );
-          });
-          const time_08 = this.reserveItems.filter((t, i) => {
-            return (
-              item.s_id === t.shootingRange.s_id &&
-              t.r_time_reserve === "17:00 - 18:00"
-            );
-          });
-          const time_09 = this.reserveItems.filter((t, i) => {
-            return (
-              item.s_id === t.shootingRange.s_id &&
-              t.r_time_reserve === "18:00 - 19:00"
-            );
-          });
-          const time_10 = this.reserveItems.filter((t, i) => {
-            return (
-              item.s_id === t.shootingRange.s_id &&
-              t.r_time_reserve === "19:00 - 20:00"
-            );
-          });
-          return {
-            range: item.s_name,
-            time_01: time_01.length > 0 ? "Not Available" : "Available",
-            time_02: time_02.length > 0 ? "Not Available" : "Available",
-            time_03: time_03.length > 0 ? "Not Available" : "Available",
-            time_04: time_04.length > 0 ? "Not Available" : "Available",
-            time_05: time_05.length > 0 ? "Not Available" : "Available",
-            time_06: time_06.length > 0 ? "Not Available" : "Available",
-            time_07: time_07.length > 0 ? "Not Available" : "Available",
-            time_08: time_08.length > 0 ? "Not Available" : "Available",
-            time_09: time_09.length > 0 ? "Not Available" : "Available",
-            time_10: time_10.length > 0 ? "Not Available" : "Available",
-          };
-        });
+        if (response.status === 200) {
+          this.rangeItems = response.data;
+          this.roomData = await Promise.all(
+            this.rangeItems.map(async (item, index) => {
+              const time_01 = await this.filterReserveItemsByTime(
+                this.reserveItems,
+                item,
+                "10:00 - 11:00"
+              );
+              const time_02 = await this.filterReserveItemsByTime(
+                this.reserveItems,
+                item,
+                "11:00 - 12:00"
+              );
+              const time_03 = await this.filterReserveItemsByTime(
+                this.reserveItems,
+                item,
+                "12:00 - 13:00"
+              );
+              const time_04 = await this.filterReserveItemsByTime(
+                this.reserveItems,
+                item,
+                "13:00 - 14:00"
+              );
+              const time_05 = await this.filterReserveItemsByTime(
+                this.reserveItems,
+                item,
+                "14:00 - 15:00"
+              );
+              const time_06 = await this.filterReserveItemsByTime(
+                this.reserveItems,
+                item,
+                "15:00 - 16:00"
+              );
+              const time_07 = await this.filterReserveItemsByTime(
+                this.reserveItems,
+                item,
+                "16:00 - 17:00"
+              );
+              const time_08 = await this.filterReserveItemsByTime(
+                this.reserveItems,
+                item,
+                "17:00 - 18:00"
+              );
+              const time_09 = await this.filterReserveItemsByTime(
+                this.reserveItems,
+                item,
+                "18:00 - 19:00"
+              );
+              const time_10 = await this.filterReserveItemsByTime(
+                this.reserveItems,
+                item,
+                "19:00 - 20:00"
+              );
+              // Add similar lines for other time slots
+
+              return {
+                range: item.s_name,
+                range_id: item.s_id,
+                time_01: time_01.length > 0 ? "ไม่ว่าง" : "ว่าง",
+                time_02: time_02.length > 0 ? "ไม่ว่าง" : "ว่าง",
+                time_03: time_03.length > 0 ? "ไม่ว่าง" : "ว่าง",
+                time_04: time_04.length > 0 ? "ไม่ว่าง" : "ว่าง",
+                time_05: time_05.length > 0 ? "ไม่ว่าง" : "ว่าง",
+                time_06: time_06.length > 0 ? "ไม่ว่าง" : "ว่าง",
+                time_07: time_07.length > 0 ? "ไม่ว่าง" : "ว่าง",
+                time_08: time_08.length > 0 ? "ไม่ว่าง" : "ว่าง",
+                time_09: time_09.length > 0 ? "ไม่ว่าง" : "ว่าง",
+                time_10: time_10.length > 0 ? "ไม่ว่าง" : "ว่าง",
+                timeD_01: "10:00 - 11:00",
+                timeD_02: "11:00 - 12:00",
+                timeD_03: "12:00 - 13:00",
+                timeD_04: "13:00 - 14:00",
+                timeD_05: "14:00 - 15:00",
+                timeD_06: "15:00 - 16:00",
+                timeD_07: "16:00 - 17:00",
+                timeD_08: "17:00 - 18:00",
+                timeD_09: "18:00 - 19:00",
+                timeD_10: "19:00 - 20:00",
+              };
+            })
+          );
+        }
       } catch (err) {
         console.error(err);
       }
     },
-    getColor(value) {
-      return value === "Available" ? "green" : "red";
-    },
-    openModal(selectedRoomData) {
-      console.log("selectedRoomData", selectedRoomData);
-      this.selectedRoomData = selectedRoomData;
 
-      this.modalOpen = true; // Open the modal
+    getColor(value) {
+      return value === "ว่าง" ? "green" : "red";
     },
     async getReserve() {
       try {
         const response = await this.axios.get(
           process.env.VUE_APP_API_SERVER + "/reserves"
         );
-        const data = JSON.stringify(response.data);
+        if (response.status === 200) {
+          const filteredReservations = await this.filterReservationsByDate(
+            response.data,
+            this.selectedDate
+          );
+          this.reserveItems = filteredReservations;
+        }
 
-        const filteredReservations = JSON.parse(data).filter((item) => {
-          return item.r_date_reserve === this.selectedDate;
-        });
-
-        this.reserveItems = filteredReservations;
         // this.reserveItems = data;
-        console.log("reserveItems", this.reserveItems);
+        // console.log("reserveItems", this.reserveItems);
       } catch (err) {
         console.error(err);
       }
+    },
+    filterReservationsByDate(data, selectedDate) {
+      return new Promise((resolve, reject) => {
+        try {
+          const filteredReservations = data.filter((item) => {
+            return item.r_date_reserve === selectedDate;
+          });
+
+          resolve(filteredReservations);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    },
+    async getGuns() {
+      try {
+        const response = await this.axios.get(
+          process.env.VUE_APP_API_SERVER + "/guns"
+        );
+        if (response.status === 200) {
+          this.gunItems = response.data;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    async reserveRange() {
+      try {
+        this.dataReserve.guns = this.selectGuns.map((item) => ({ g_id: item }));
+
+        // console.log("save", this.dataReserve);
+
+        const response = await this.axios.post(
+          process.env.VUE_APP_API_SERVER + "/reserve",
+          { ...this.dataReserve }
+        );
+        if (response.status === 201) {
+          Swal.fire({
+            title: "จองสนามสำเร็จ!",
+            // text: "คุณสมัครสมาชิกสำเร็จ",
+            icon: "success",
+            confirmButtonText: "ตกลง",
+            timer: 1000,
+          });
+          this.getReserve();
+          this.getAllRange();
+          this.getGuns();
+        }
+      } catch (err) {
+        Swal.fire({
+          title: "เกิดข้อผิดพลาด!",
+          // text: "คุณสมัครสมาชิกสำเร็จ",
+          icon: "error",
+          confirmButtonText: "ตกลง",
+          timer: 1500,
+        });
+        console.error(err);
+      }
+    },
+    openDialogCard(s_id, s_name, r_time_reserve) {
+      this.dataReserve = {
+        range: s_name,
+        r_date_reserve: this.selectedDate,
+        r_time_reserve: r_time_reserve,
+        customer: {
+          c_id: this.c_id,
+        },
+        shootingRange: {
+          s_id: s_id,
+        },
+        guns: [],
+      };
+      this.dialogOpen = true;
+      // console.log(this.dataReserve);
+    },
+    closeDialogCard() {
+      // Reset the editedUser and close the dialog
+      this.dataReserve = {};
+      this.dialogOpen = false;
     },
   },
 };
