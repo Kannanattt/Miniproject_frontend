@@ -1,5 +1,8 @@
 <template>
-  <v-container>
+    <v-container style="padding-top: 50px; padding-bottom: 60px">
+    <v-btn text @click="$router.go(-1)" style="margin-bottom: 20px">
+      <v-icon left>mdi-arrow-left</v-icon> ย้อนกลับ
+    </v-btn>
     <v-row justify="center">
       <v-col cols="12" xs="10" sm="10" md="12">
         <v-card style="padding: 20px">

@@ -1,5 +1,9 @@
 <template>
-  <v-container>
+  <v-container style="padding-top: 50px; padding-bottom: 60px">
+    <v-btn text @click="$router.go(-1)" style="margin-bottom: 20px">
+      <v-icon left>mdi-arrow-left</v-icon> ย้อนกลับ
+    </v-btn>
+
     <h2>รายชื่อผู้ใช้ระบบ</h2>
     <v-row>
       <v-col
@@ -55,12 +59,19 @@
           <!-- Add other fields for editing -->
 
           <!-- Save and Cancel buttons -->
-          <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: 10px">
-            
-              <v-btn color="primary" @click="saveUserChanges(editedUser.u_id)">บันทึก</v-btn>
-          <v-btn style="margin-left: 10px" @click="cancelEdit">ยกเลิก</v-btn>
-            </div>
-        
+          <div
+            style="
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
+              margin-top: 10px;
+            "
+          >
+            <v-btn color="primary" @click="saveUserChanges(editedUser.u_id)"
+              >บันทึก</v-btn
+            >
+            <v-btn style="margin-left: 10px" @click="cancelEdit">ยกเลิก</v-btn>
+          </div>
         </v-card-text>
       </v-card>
     </v-dialog>

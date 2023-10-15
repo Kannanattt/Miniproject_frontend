@@ -9,6 +9,8 @@ import GunListView from '../views/GunListView.vue'
 import GunAddView from '../views/GunAddView.vue'
 import RangeListView from '../views/RangeListView.vue'
 import RangeAddView from '../views/RangeAddView.vue'
+import ReserveDetailView from '../views/ReserveDetailView.vue'
+import ReserveListView from '../views/ReserveListView.vue'
 
 Vue.use(VueRouter)
 
@@ -57,6 +59,16 @@ const routes = [
     path: '/range/add',
     name: 'addrange',
     component: RangeAddView
+  },
+  {
+    path: '/reservedata',
+    name: 'reservedata',
+    component: ReserveDetailView
+  },
+  {
+    path: '/reserve',
+    name: 'reserve',
+    component: ReserveListView
   },
 ]
 

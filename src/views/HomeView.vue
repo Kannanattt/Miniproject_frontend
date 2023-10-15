@@ -1,16 +1,27 @@
 <template>
   <div>
     <ImageCover />
-    <v-container>
-      <h2>ตารางการจองสนามยิงปืน</h2>
-      <label for="date">เลือกวันที่: </label>
-      <input type="date" id="date" name="date" v-model="selectedDate" />
-      <p>Selected Date: {{ selectedDate }}</p>
+    <div
+      style="
+        padding: 100px;
+        padding-top: 30px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+      "
+    >
+      <h1>ตารางการจองสนามยิงปืน</h1>
+      <div style="padding: 20px; padding-left: 0px">
+        <label for="date">เลือกวันที่: </label>
+        <input type="date" id="date" name="date" v-model="selectedDate" />
+      </div>
+
+      <!-- <p>Selected Date: {{ selectedDate }}</p> -->
       <template>
-        <v-table fixed-header height="300px">
+        <v-table fixed-header height="100px">
           <thead>
             <tr>
-              <th class="text-left">ชื่อสนาม</th>
+              <th class="text-left">ชื่อสนาม/เวลา</th>
               <th class="text-left">10:00 - 11:00</th>
               <th class="text-left">11:00 - 12:00</th>
               <th class="text-left">12:00 - 13:00</th>
@@ -31,6 +42,8 @@
                   @click="
                     openDialogCard(item.range_id, item.range, item.timeD_01)
                   "
+                  class="select"
+                  :disabled="item.time_01 === 'ไม่ว่าง'"
                   label
                   :color="getColor(item.time_01)"
                   style="display: flex; justify-content: center; align-items; center; width: 100px;"
@@ -42,6 +55,11 @@
               </td>
               <td>
                 <v-chip
+                  @click="
+                    openDialogCard(item.range_id, item.range, item.timeD_02)
+                  "
+                  class="select"
+                  :disabled="item.time_02 === 'ไม่ว่าง'"
                   label
                   :color="getColor(item.time_02)"
                   style="display: flex; justify-content: center; align-items; center; width: 100px;"
@@ -53,6 +71,11 @@
               </td>
               <td>
                 <v-chip
+                  @click="
+                    openDialogCard(item.range_id, item.range, item.timeD_03)
+                  "
+                  class="select"
+                  :disabled="item.time_03 === 'ไม่ว่าง'"
                   label
                   :color="getColor(item.time_03)"
                   style="display: flex; justify-content: center; align-items; center; width: 100px;"
@@ -64,6 +87,11 @@
               </td>
               <td>
                 <v-chip
+                  @click="
+                    openDialogCard(item.range_id, item.range, item.timeD_04)
+                  "
+                  class="select"
+                  :disabled="item.time_04 === 'ไม่ว่าง'"
                   label
                   :color="getColor(item.time_04)"
                   style="display: flex; justify-content: center; align-items; center; width: 100px;"
@@ -75,6 +103,11 @@
               </td>
               <td>
                 <v-chip
+                  @click="
+                    openDialogCard(item.range_id, item.range, item.timeD_05)
+                  "
+                  class="select"
+                  :disabled="item.time_05 === 'ไม่ว่าง'"
                   label
                   :color="getColor(item.time_05)"
                   style="display: flex; justify-content: center; align-items; center; width: 100px;"
@@ -86,6 +119,11 @@
               </td>
               <td>
                 <v-chip
+                  @click="
+                    openDialogCard(item.range_id, item.range, item.timeD_06)
+                  "
+                  class="select"
+                  :disabled="item.time_06 === 'ไม่ว่าง'"
                   label
                   :color="getColor(item.time_06)"
                   style="display: flex; justify-content: center; align-items; center; width: 100px;"
@@ -97,6 +135,11 @@
               </td>
               <td>
                 <v-chip
+                  @click="
+                    openDialogCard(item.range_id, item.range, item.timeD_07)
+                  "
+                  class="select"
+                  :disabled="item.time_07 === 'ไม่ว่าง'"
                   label
                   :color="getColor(item.time_07)"
                   style="display: flex; justify-content: center; align-items; center; width: 100px;"
@@ -108,6 +151,11 @@
               </td>
               <td>
                 <v-chip
+                  @click="
+                    openDialogCard(item.range_id, item.range, item.timeD_08)
+                  "
+                  class="select"
+                  :disabled="item.time_08 === 'ไม่ว่าง'"
                   label
                   :color="getColor(item.time_08)"
                   style="display: flex; justify-content: center; align-items; center; width: 100px;"
@@ -119,6 +167,11 @@
               </td>
               <td>
                 <v-chip
+                  @click="
+                    openDialogCard(item.range_id, item.range, item.timeD_09)
+                  "
+                  class="select"
+                  :disabled="item.time_09 === 'ไม่ว่าง'"
                   label
                   :color="getColor(item.time_09)"
                   style="display: flex; justify-content: center; align-items; center; width: 100px;"
@@ -130,6 +183,11 @@
               </td>
               <td>
                 <v-chip
+                  @click="
+                    openDialogCard(item.range_id, item.range, item.timeD_10)
+                  "
+                  class="select"
+                  :disabled="item.time_10 === 'ไม่ว่าง'"
                   label
                   :color="getColor(item.time_10)"
                   style="display: flex; justify-content: center; align-items; center; width: 100px;"
@@ -143,7 +201,7 @@
           </tbody>
         </v-table>
       </template>
-    </v-container>
+    </div>
     <v-dialog v-model="dialogOpen" max-width="600px">
       <v-card>
         <v-card-title>ข้อมูลการจอง</v-card-title>
@@ -164,7 +222,7 @@
             v-model="selectGuns"
             :items="gunItems"
             label="เลือกปืน"
-            item-value="g_id"
+            item-value="g_name"
             item-text="g_name"
             multiple
           >
@@ -211,6 +269,8 @@ export default {
   },
   data() {
     return {
+      auth: null,
+      items: null,
       c_id: null,
       selectedDate: "",
       rangeItems: [],
@@ -219,7 +279,7 @@ export default {
       dataReserve: {},
       gunItems: [],
       selectGuns: [],
-      roomData: []
+      roomData: [],
     };
   },
   watch: {
@@ -231,6 +291,8 @@ export default {
   },
 
   created() {
+    this.auth = JSON.parse(localStorage.getItem("auth"));
+    this.isAdmin = this.auth.user.role === "owner";
     const currentDate = new Date();
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are 0-indexed
@@ -406,7 +468,8 @@ export default {
     },
     async reserveRange() {
       try {
-        this.dataReserve.guns = this.selectGuns.map((item) => ({ g_id: item }));
+        // this.dataReserve.guns = this.selectGuns.map((item) => ({ g_id: item }));
+        this.dataReserve.guns = this.selectGuns;
 
         // console.log("save", this.dataReserve);
 
@@ -415,16 +478,16 @@ export default {
           { ...this.dataReserve }
         );
         if (response.status === 201) {
+          this.dialogOpen = false;
           Swal.fire({
             title: "จองสนามสำเร็จ!",
             // text: "คุณสมัครสมาชิกสำเร็จ",
             icon: "success",
             confirmButtonText: "ตกลง",
-            timer: 1000,
+            // timer: 1000,
+          }).then(() => {
+            window.location.href = "/reservedata";
           });
-          this.getReserve();
-          this.getAllRange();
-          this.getGuns();
         }
       } catch (err) {
         Swal.fire({
@@ -437,7 +500,9 @@ export default {
         console.error(err);
       }
     },
-    openDialogCard(s_id, s_name, r_time_reserve) {
+    async openDialogCard(s_id, s_name, r_time_reserve) {
+      if (this.isAdmin) return;
+      if (await this.getDetail()) return;
       this.dataReserve = {
         range: s_name,
         r_date_reserve: this.selectedDate,
@@ -458,18 +523,54 @@ export default {
       this.dataReserve = {};
       this.dialogOpen = false;
     },
+    async getDetail() {
+      try {
+        const response = await this.axios.get(
+          process.env.VUE_APP_API_SERVER + `/reserves`
+        );
+        if (response.status === 200) {
+          this.items = response.data.filter(
+            (item) => item.customer.c_id === this.c_id
+          );
+          console.log("this.items", this.items);
+          if (this.items.length > 0) {
+            Swal.fire({
+              title: "คุณมีสนามที่จองอยู่แล้ว!",
+              text: "คุณสามารถจองได้ 1 สนามต่อครั้ง",
+              icon: "warning",
+              confirmButtonText: "ดูข้อมูล",
+              showCancelButton: true,
+              cancelButtonText: "ปิด",
+              // timer: 1000,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = "/reservedata";
+              }
+            });
+            return true;
+          } else if (this.items.length === 0) {
+            return false;
+          }
+        }
+      } catch (error) {
+        console.error("Registration error:", error);
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
 .text-left {
-  width: 200px;
+  width: 300px;
   font-size: 12px;
   text-align: center;
 }
 
 td {
   padding-top: 10px;
+}
+.select:hover {
+  color: var(--color-main);
 }
 </style>

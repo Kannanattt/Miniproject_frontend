@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container >
     <v-row justify="center" style="margin-top: 20px">
       <h2>เมนูจัดการระบบ</h2>
     </v-row>
@@ -21,7 +21,7 @@
         </a>
       </v-col>
       <v-col cols="12" xs="10" sm="10" md="3">
-        <a href="/user">
+        <a href="/reserve">
           <v-card
             style="
               margin: 20px;

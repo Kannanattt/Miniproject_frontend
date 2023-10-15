@@ -80,8 +80,8 @@
               <span>{{ user.phone }}</span>
               <v-divider class="my-3" v-if="isAdmin"></v-divider>
               <v-btn variant="text" v-if="isAdmin" to="/admin">จัดการระบบ</v-btn>
-              <v-divider class="my-3"></v-divider>
-              <v-btn variant="text" to="/profile">แก้ไขข้อมูลส่วนตัว</v-btn>
+              <v-divider class="my-3" v-if="!isAdmin"></v-divider>
+              <v-btn variant="text" to="/reservedata" v-if="!isAdmin">ข้อมูลการจอง</v-btn>
               <v-divider class="my-3"></v-divider>
               <v-btn variant="text" @click="logout()"> ออกจากระบบ </v-btn>
             </div>
