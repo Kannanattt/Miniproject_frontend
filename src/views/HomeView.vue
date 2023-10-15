@@ -2,6 +2,7 @@
   <div>
     <ImageCover />
     <div
+      v-if="auth"
       style="
         padding: 100px;
         padding-top: 30px;
@@ -202,20 +203,38 @@
         </v-table>
       </template>
     </div>
+    <div
+      v-else
+      style="
+        padding: 100px;
+        /* padding-top: 30px; */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        flex-direction: column;
+      "
+    >
+    <v-card style="padding: 50px;">
+      <h2>** กรุณาเข้าสู่ระบบเพื่อทำการจองสนาม **</h2>
+      <v-btn color="primary" style="margin-top: 20px;" @click="$router.push('/login')">เข้าสู่ระบบ</v-btn>
+
+    </v-card>
+    </div>
     <v-dialog v-model="dialogOpen" max-width="600px">
       <v-card>
         <v-card-title><h3>ข้อมูลการจอง</h3></v-card-title>
         <v-container style="padding: 25px; padding-top: 0">
           <div style="display: flex; flex-direction: row">
-            <span style="font-weight: bold;">สนาม:&nbsp;</span>
+            <span style="font-weight: bold">สนาม:&nbsp;</span>
             <span>{{ dataReserve.range }}</span>
           </div>
           <div style="display: flex; flex-direction: row">
-            <span style="font-weight: bold;">วันที่จอง:&nbsp;</span>
+            <span style="font-weight: bold">วันที่จอง:&nbsp;</span>
             <span>{{ dataReserve.r_date_reserve }}</span>
           </div>
           <div style="display: flex; flex-direction: row">
-            <span style="font-weight: bold;">เวลาที่จอง:&nbsp;</span>
+            <span style="font-weight: bold">เวลาที่จอง:&nbsp;</span>
             <span>{{ dataReserve.r_time_reserve }}</span>
           </div>
 
