@@ -206,7 +206,7 @@
     <div
       v-else
       style="
-        padding: 100px;
+        padding: 50px;
         /* padding-top: 30px; */
         display: flex;
         justify-content: center;
