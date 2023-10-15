@@ -123,7 +123,7 @@ export default {
             );
             if (response.status === 200) {
               Swal.fire({
-                title: "ลบสนานมสำเร็จ!",
+                title: "ลบสนามสำเร็จ!",
                 // text: "คุณสมัครสมาชิกสำเร็จ",
                 icon: "success",
                 confirmButtonText: "ตกลง",
