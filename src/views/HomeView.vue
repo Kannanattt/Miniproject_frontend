@@ -204,20 +204,21 @@
     </div>
     <v-dialog v-model="dialogOpen" max-width="600px">
       <v-card>
-        <v-card-title>ข้อมูลการจอง</v-card-title>
-        <v-container>
+        <v-card-title><h3>ข้อมูลการจอง</h3></v-card-title>
+        <v-container style="padding: 25px; padding-top: 0">
           <div style="display: flex; flex-direction: row">
-            <span>สนาม: </span>
+            <span style="font-weight: bold;">สนาม:&nbsp;</span>
             <span>{{ dataReserve.range }}</span>
           </div>
           <div style="display: flex; flex-direction: row">
-            <span>วันที่จอง: </span>
+            <span style="font-weight: bold;">วันที่จอง:&nbsp;</span>
             <span>{{ dataReserve.r_date_reserve }}</span>
           </div>
           <div style="display: flex; flex-direction: row">
-            <span>เวลาที่จอง: </span>
+            <span style="font-weight: bold;">เวลาที่จอง:&nbsp;</span>
             <span>{{ dataReserve.r_time_reserve }}</span>
           </div>
+
           <v-select
             v-model="selectGuns"
             :items="gunItems"
@@ -238,21 +239,20 @@
               </span>
             </template>
           </v-select>
-        </v-container>
-
-        <div
-          style="
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            margin-top: 10px;
-          "
-        >
-          <v-btn color="primary" @click="reserveRange()">บันทึก</v-btn>
-          <v-btn style="margin-left: 10px" @click="closeDialogCard"
-            >ยกเลิก</v-btn
+          <div
+            style="
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
+              margin-top: 10px;
+            "
           >
-        </div>
+            <v-btn color="primary" @click="reserveRange()">ยืนยันการจอง</v-btn>
+            <v-btn style="margin-left: 10px" @click="closeDialogCard"
+              >ยกเลิก</v-btn
+            >
+          </div>
+        </v-container>
       </v-card>
     </v-dialog>
   </div>
@@ -521,6 +521,7 @@ export default {
     closeDialogCard() {
       // Reset the editedUser and close the dialog
       this.dataReserve = {};
+      this.dataReserve.guns = [];
       this.dialogOpen = false;
     },
     async getDetail() {

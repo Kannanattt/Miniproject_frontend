@@ -1,5 +1,5 @@
 <template>
-    <v-container style="padding-top: 50px; padding-bottom: 60px">
+  <v-container style="padding-top: 50px; padding-bottom: 60px">
     <v-btn text @click="$router.go(-1)" style="margin-bottom: 20px">
       <v-icon left>mdi-arrow-left</v-icon> ย้อนกลับ
     </v-btn>
@@ -17,34 +17,33 @@
       class="elevation-1"
     >
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon small class="mr-2" @click="editUser(item)"> mdi-pencil </v-icon>
+        <v-icon small class="mr-2" @click="editUser(item)"> mdi-eye </v-icon>
         <v-icon small @click="deleteItem(item.r_id)"> mdi-delete </v-icon>
       </template>
     </v-data-table>
 
-    <v-dialog v-model="editDialog" max-width="600px">
-      <v-card>
-        <v-card-title>รายละเอียด</v-card-title>
-        <v-card-text>
-          <v-card-title>{{ editGun?.shootingRange?.s_name }}</v-card-title>
-          <v-card-text>{{ editGun?.r_date_reserve }}</v-card-text>
-          <v-card-text>{{ editGun?.r_time_reserve }}</v-card-text>
-          <v-card-text> ปืน </v-card-text>
-          <v-card-text v-for="gun in editGun?.guns" :key="gun.id">{{
-            gun
-          }}</v-card-text>
-
-          <div
-            style="
-              display: flex;
-              justify-content: flex-end;
-              align-items: center;
-              margin-top: 10px;
-            "
-          >
-            <v-btn style="margin-left: 10px" @click="cancelEdit">ปิด</v-btn>
-          </div>
-        </v-card-text>
+    <v-dialog v-model="editDialog" max-width="600px" style="height: 100%">
+      <v-card class="card">
+        <v-card-title><h4>รายละเอียด</h4></v-card-title>
+        <v-card-text
+          ><strong>สนามที่จอง:</strong>
+          {{ editGun?.shootingRange?.s_name }}</v-card-text
+        >
+        <v-card-text
+          ><strong>วันที่จอง:</strong>
+          {{ editGun?.r_date_reserve }}</v-card-text
+        >
+        <v-card-text
+          ><strong>เวลาที่จอง:</strong>
+          {{ editGun?.r_time_reserve }}</v-card-text
+        >
+        <v-card-text><strong>ปืน:</strong></v-card-text>
+        <v-card-text
+          v-for="gun in editGun?.guns"
+          :key="gun.g_id"
+          style="display: inline"
+          >{{ gun }},</v-card-text
+        >
       </v-card>
     </v-dialog>
   </v-container>
@@ -172,7 +171,7 @@ export default {
 
     editUser(item) {
       this.editGun = { ...item };
-      console.log("this.editGun",this.editGun);
+      console.log("this.editGun", this.editGun);
       this.editDialog = true;
     },
 
@@ -216,3 +215,15 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.card {
+  /* margin: 20px; */
+  padding: 20px;
+  padding-bottom: 30px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  height: 100%;
+}
+</style>
